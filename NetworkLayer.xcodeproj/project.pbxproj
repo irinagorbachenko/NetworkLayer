@@ -11,6 +11,7 @@
 		A97997C8275943FD00F90E1A /* NetworkLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A97997BD275943FD00F90E1A /* NetworkLayer.framework */; };
 		A97997CD275943FD00F90E1A /* NetworkLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97997CC275943FD00F90E1A /* NetworkLayerTests.swift */; };
 		A97997CE275943FD00F90E1A /* NetworkLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = A97997C0275943FD00F90E1A /* NetworkLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A97997DE275946C700F90E1A /* NetworkLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A97997DD275946C700F90E1A /* NetworkLayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		A97997C1275943FD00F90E1A /* NetworkLayer.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = NetworkLayer.docc; sourceTree = "<group>"; };
 		A97997C7275943FD00F90E1A /* NetworkLayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkLayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A97997CC275943FD00F90E1A /* NetworkLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLayerTests.swift; sourceTree = "<group>"; };
+		A97997DD275946C700F90E1A /* NetworkLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkLayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +73,7 @@
 		A97997BF275943FD00F90E1A /* NetworkLayer */ = {
 			isa = PBXGroup;
 			children = (
+				A97997DD275946C700F90E1A /* NetworkLayer.swift */,
 				A97997C0275943FD00F90E1A /* NetworkLayer.h */,
 				A97997C1275943FD00F90E1A /* NetworkLayer.docc */,
 			);
@@ -194,6 +197,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A97997DE275946C700F90E1A /* NetworkLayer.swift in Sources */,
 				A97997C2275943FD00F90E1A /* NetworkLayer.docc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +400,7 @@
 		A97997D5275943FD00F90E1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -416,6 +421,7 @@
 		A97997D6275943FD00F90E1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
