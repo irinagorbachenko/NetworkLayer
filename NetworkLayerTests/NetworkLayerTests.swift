@@ -7,35 +7,7 @@
 
 import XCTest
 @testable import NetworkLayer
-
-
-protocol NetworkSession {
-    func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> NetworkTask
-}
-
-protocol NetworkTask {
-    func resume()
-}
-
-struct URLHTTPClient: HTTPClient {
-    let session: NetworkSession
-    private struct UnexpectedArguments: Error {}
-    
-    func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> ()) {
-        let task: NetworkTask = session.dataTask(with: url) { (data, response, error) in
-            if let data = data, let response = response as? HTTPURLResponse {
-                completion(.success((data, response)))
-            } else  if let error = error {
-                completion(.failure(error))
-            } else{
-                completion(.failure(UnexpectedArguments()))
-            }
-        }
-        task.resume()
-    }
-}
-
-
+ 
 class NetworkTaskSpy: NetworkTask {
     var data :Data?
     var response :URLResponse?
@@ -64,7 +36,7 @@ enum SomeError: Error { case some}
 
 class NetworkLayerTests: XCTestCase {
    
-    func test_get_returnsErrorOnDataNilResponseNilErrorValid() {
+    func test_get_withDataResponseNilErrorDataValid() {  // nil,nil,value -valid
         let exp = expectation(description: "waiting for response")
         let networkTask = NetworkTaskSpy()
         let session = NetworkSessionSpy()
@@ -73,7 +45,8 @@ class NetworkLayerTests: XCTestCase {
         networkTask.response = nil
         networkTask.error = SomeError.some
         let sut = URLHTTPClient(session: session)
-
+        memoryLeakTrack(sut)
+        
         let url = URL(string: "http://google.com")!
         sut.get(from: url) { result in
             switch result {
@@ -90,7 +63,7 @@ class NetworkLayerTests: XCTestCase {
     }
         
     
-    func test_get_returnsResponseDataErrorNilDataValid() {
+    func test_get_withResponseDataValueErrorNilValid() { //value,value,nil - valid
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -102,7 +75,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.response = response
         networkTask.error = nil
         let sut = URLHTTPClient(session: session)
-
+        memoryLeakTrack(sut)
 
         sut.get(from: url) { result in
             switch result {
@@ -118,5 +91,237 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    func test_get_withAllNilArgumentsReturnsError() { // nil,nil,nil -invalid
+        
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = nil
+        networkTask.response = nil
+        networkTask.error = nil
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+            }
+            
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_get_withResponseValueDataErrorNilReturnsError() { // nil,value,nil -invalid
+        
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = nil
+        networkTask.response = response
+        networkTask.error = nil
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+            }
+            
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_get_withDataValueResponseErrorNilReturnsError() { //value,nil,nil-invalid
+        
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = data
+        networkTask.response = nil
+        networkTask.error = nil
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+            }
+            
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_get_withDataValueResponseNilErrorValueReturnsError() { //value,nil,value - invalid
+        
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = data
+        networkTask.response = nil
+        networkTask.error = SomeError.some
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+            }
+            
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_get_withDataNilResponseErrorValueReturnsError() { //nil,value,value - invalid
+        
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = nil
+        networkTask.response = response
+        networkTask.error = SomeError.some
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+
+
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+            }
+            
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+    func test_get_withaAllDataResponseErrorValueReturnsError() {   //value,value,value - invalid
+
+        let exp = expectation(description: "waiting for response")
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = data
+        networkTask.response = response
+        networkTask.error = SomeError.some
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+       
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+
+            }
+
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+    }
+    
+
+    func memoryLeakTrack(_ instance: AnyObject, file: StaticString = #file, line: UInt = #line) {
+
+    addTeardownBlock { [weak instance] in
+
+    XCTAssertNil(instance, "Potential leak.", file: file, line: line)
+
+    }
+
+    }
+    
+    func test_get_noSideEffect(){
+        
+        
+        let exp = expectation(description: "waiting for response")
+        exp.expectedFulfillmentCount = 2
+        let url = URL(string: "http://google.com")!
+        let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let data = Data()
+        let networkTask = NetworkTaskSpy()
+        let session = NetworkSessionSpy()
+        session.taskSpy = networkTask
+        networkTask.data = data
+        networkTask.response = response
+        networkTask.error = SomeError.some
+        let sut = URLHTTPClient(session: session)
+        memoryLeakTrack(sut)
+       
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+
+            }
+
+        }
+        
+        sut.get(from: url) { result in
+            switch result {
+            case let .failure(error):
+                exp.fulfill()
+            case let .success((data, response)):
+                XCTFail()
+
+            }
+
+        }
+
+        XCTAssertTrue(networkTask.isCalled)
+        wait(for: [exp], timeout: 0.1)
+        
+        
+        
+    }
 }
 
