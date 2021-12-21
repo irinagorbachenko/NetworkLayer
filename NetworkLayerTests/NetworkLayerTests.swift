@@ -36,7 +36,8 @@ enum SomeError: Error { case some}
 
 class NetworkLayerTests: XCTestCase {
    
-    func test_get_withDataResponseNilErrorDataValid() {  // nil,nil,value -valid
+    //MARK:data: nil,response: nil,error: value, status: valid
+    func test_get_withDataResponseNilErrorDataValid() {
         let exp = expectation(description: "waiting for response")
         let networkTask = NetworkTaskSpy()
         let session = NetworkSessionSpy()
@@ -62,8 +63,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
         
-    
-    func test_get_withResponseDataValueErrorNilValid() { //value,value,nil - valid
+    //MARK:data: value,response: value,error: nil, status: valid
+    func test_get_withResponseDataValueErrorNilValid() {
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -91,7 +92,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    func test_get_withAllNilArgumentsReturnsError() { // nil,nil,nil -invalid
+    //MARK:data: nil,response: nil,error: nil, status: invalid
+    func test_get_withAllNilArgumentsReturnsError() {
         
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
@@ -119,8 +121,8 @@ class NetworkLayerTests: XCTestCase {
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
-    
-    func test_get_withResponseValueDataErrorNilReturnsError() { // nil,value,nil -invalid
+    //MARK:data: nil,response: value,error: nil, status: invalid
+    func test_get_withResponseValueDataErrorNilReturnsError() {
         
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
@@ -149,7 +151,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    func test_get_withDataValueResponseErrorNilReturnsError() { //value,nil,nil-invalid
+    //MARK:data: value,response: nil,error: nil, status: invalid
+    func test_get_withDataValueResponseErrorNilReturnsError() {
         
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
@@ -178,7 +181,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    func test_get_withDataValueResponseNilErrorValueReturnsError() { //value,nil,value - invalid
+    //MARK:data: value,response: nil,error: value, status: invalid
+    func test_get_withDataValueResponseNilErrorValueReturnsError() {
         
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
@@ -207,7 +211,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    func test_get_withDataNilResponseErrorValueReturnsError() { //nil,value,value - invalid
+    //MARK:data: nil,response: value,error: value, status: invalid
+    func test_get_withDataNilResponseErrorValueReturnsError() {
         
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
@@ -237,7 +242,8 @@ class NetworkLayerTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    func test_get_withaAllDataResponseErrorValueReturnsError() {   //value,value,value - invalid
+    //MARK:data: value,response: value,error: value, status: invalid
+    func test_get_withaAllDataResponseErrorValueReturnsError() {   
 
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
