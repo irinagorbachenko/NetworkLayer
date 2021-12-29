@@ -12,7 +12,6 @@ class NetworkTaskSpy: NetworkTask {
     var data :Data?
     var response :URLResponse?
     var error : Error?
-    
     var isCalled = false
     var completion: ((Data?, URLResponse?, Error?) -> Void)?
 
@@ -23,7 +22,6 @@ class NetworkTaskSpy: NetworkTask {
 }
 
 class NetworkSessionSpy: NetworkSession {
-
     var taskSpy: NetworkTaskSpy = NetworkTaskSpy()
 
     func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> NetworkTask {
@@ -58,7 +56,6 @@ class NetworkLayerTests: XCTestCase {
                 XCTFail()
             }
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
@@ -87,14 +84,12 @@ class NetworkLayerTests: XCTestCase {
             }
             exp.fulfill()
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
     //MARK:data: nil,response: nil,error: nil, status: invalid
     func test_get_withAllNilArgumentsReturnsError() {
-        
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -115,15 +110,12 @@ class NetworkLayerTests: XCTestCase {
             case let .success((data, response)):
                 XCTFail()
             }
-            
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     //MARK:data: nil,response: value,error: nil, status: invalid
     func test_get_withResponseValueDataErrorNilReturnsError() {
-        
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -144,16 +136,13 @@ class NetworkLayerTests: XCTestCase {
             case let .success((data, response)):
                 XCTFail()
             }
-            
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
     //MARK:data: value,response: nil,error: nil, status: invalid
     func test_get_withDataValueResponseErrorNilReturnsError() {
-        
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -174,16 +163,13 @@ class NetworkLayerTests: XCTestCase {
             case let .success((data, response)):
                 XCTFail()
             }
-            
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
     //MARK:data: value,response: nil,error: value, status: invalid
     func test_get_withDataValueResponseNilErrorValueReturnsError() {
-        
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -204,16 +190,13 @@ class NetworkLayerTests: XCTestCase {
             case let .success((data, response)):
                 XCTFail()
             }
-            
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
     //MARK:data: nil,response: value,error: value, status: invalid
     func test_get_withDataNilResponseErrorValueReturnsError() {
-        
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -227,7 +210,6 @@ class NetworkLayerTests: XCTestCase {
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
 
-
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -235,16 +217,13 @@ class NetworkLayerTests: XCTestCase {
             case let .success((data, response)):
                 XCTFail()
             }
-            
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
     //MARK:data: value,response: value,error: value, status: invalid
-    func test_get_withaAllDataResponseErrorValueReturnsError() {   
-
+    func test_get_withaAllDataResponseErrorValueReturnsError() {
         let exp = expectation(description: "waiting for response")
         let url = URL(string: "http://google.com")!
         let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
@@ -264,29 +243,20 @@ class NetworkLayerTests: XCTestCase {
                 exp.fulfill()
             case let .success((data, response)):
                 XCTFail()
-
             }
-
         }
-
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
     
-
     func memoryLeakTrack(_ instance: AnyObject, file: StaticString = #file, line: UInt = #line) {
-
     addTeardownBlock { [weak instance] in
-
     XCTAssertNil(instance, "Potential leak.", file: file, line: line)
 
     }
-
     }
     
     func test_get_noSideEffect(){
-        
-        
         let exp = expectation(description: "waiting for response")
         exp.expectedFulfillmentCount = 2
         let url = URL(string: "http://google.com")!
@@ -325,8 +295,6 @@ class NetworkLayerTests: XCTestCase {
 
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
-        
-        
         
     }
 }

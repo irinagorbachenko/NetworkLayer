@@ -4,9 +4,7 @@
 //
 //  Created by Irina Gorbachenko on 02.12.2021.
 //
-
 import Foundation
-
 import UIKit
 
 public protocol HTTPClient {
@@ -43,12 +41,8 @@ public class URLHTTPClient: HTTPClient {
     }
 }
 
-
-
 public struct ImageLoader {
-    
     public let session: HTTPClient
-    
     public init(with session: HTTPClient) {
         self.session = session
     }
