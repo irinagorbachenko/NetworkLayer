@@ -7,14 +7,14 @@
 
 import XCTest
 @testable import NetworkLayer
- 
+
 class NetworkTaskSpy: NetworkTask {
     var data :Data?
     var response :URLResponse?
     var error : Error?
     var isCalled = false
     var completion: ((Data?, URLResponse?, Error?) -> Void)?
-
+    
     func resume() {
         completion?(data, response, error)
         isCalled = true
@@ -23,7 +23,7 @@ class NetworkTaskSpy: NetworkTask {
 
 class NetworkSessionSpy: NetworkSession {
     var taskSpy: NetworkTaskSpy = NetworkTaskSpy()
-
+    
     func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> NetworkTask {
         taskSpy.completion = completionHandler
         return taskSpy
@@ -33,7 +33,7 @@ class NetworkSessionSpy: NetworkSession {
 enum SomeError: Error { case some}
 
 class NetworkLayerTests: XCTestCase {
-   
+    
     //MARK:data: nil,response: nil,error: value, status: valid
     func test_get_withDataResponseNilErrorDataValid() {
         let exp = expectation(description: "waiting for response")
@@ -59,7 +59,7 @@ class NetworkLayerTests: XCTestCase {
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
     }
-        
+    
     //MARK:data: value,response: value,error: nil, status: valid
     func test_get_withResponseDataValueErrorNilValid() {
         let exp = expectation(description: "waiting for response")
@@ -74,7 +74,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = nil
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -102,7 +102,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = nil
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -128,7 +128,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = nil
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -155,7 +155,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = nil
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -182,7 +182,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = SomeError.some
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -209,7 +209,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = SomeError.some
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -236,7 +236,7 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = SomeError.some
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-       
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
@@ -250,10 +250,10 @@ class NetworkLayerTests: XCTestCase {
     }
     
     func memoryLeakTrack(_ instance: AnyObject, file: StaticString = #file, line: UInt = #line) {
-    addTeardownBlock { [weak instance] in
-    XCTAssertNil(instance, "Potential leak.", file: file, line: line)
-
-    }
+        addTeardownBlock { [weak instance] in
+            XCTAssertNil(instance, "Potential leak.", file: file, line: line)
+            
+        }
     }
     
     func test_get_noSideEffect(){
@@ -270,16 +270,16 @@ class NetworkLayerTests: XCTestCase {
         networkTask.error = SomeError.some
         let sut = URLHTTPClient(session: session)
         memoryLeakTrack(sut)
-       
+        
         sut.get(from: url) { result in
             switch result {
             case let .failure(error):
                 exp.fulfill()
             case let .success((data, response)):
                 XCTFail()
-
+                
             }
-
+            
         }
         
         sut.get(from: url) { result in
@@ -288,11 +288,11 @@ class NetworkLayerTests: XCTestCase {
                 exp.fulfill()
             case let .success((data, response)):
                 XCTFail()
-
+                
             }
-
+            
         }
-
+        
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
         

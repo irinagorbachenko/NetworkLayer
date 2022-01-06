@@ -18,6 +18,7 @@ public protocol NetworkTask {
     func resume()
 }
 
+
 public class URLHTTPClient: HTTPClient {
     let session: NetworkSession
     private struct UnexpectedArguments: Error {}
@@ -25,7 +26,7 @@ public class URLHTTPClient: HTTPClient {
     public init(session: NetworkSession) {
         self.session = session
     }
-
+    
     public func get(from url: URL, completion: @escaping (Result<(Data, HTTPURLResponse), Error>) -> ()) {
         let task: NetworkTask = session.dataTask(with: url) { (data, response, error) in
             if let error = error {
@@ -35,7 +36,7 @@ public class URLHTTPClient: HTTPClient {
             } else{
                 completion(.failure(UnexpectedArguments()))
             }
-
+            
         }
         task.resume()
     }
