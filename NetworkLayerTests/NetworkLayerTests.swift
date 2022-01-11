@@ -9,9 +9,9 @@ import XCTest
 @testable import NetworkLayer
 
 class NetworkTaskSpy: NetworkTask {
-    var data :Data?
-    var response :URLResponse?
-    var error : Error?
+    var data: Data?
+    var response: URLResponse?
+    var error: Error?
     var isCalled = false
     var completion: ((Data?, URLResponse?, Error?) -> Void)?
     
@@ -33,7 +33,6 @@ class NetworkSessionSpy: NetworkSession {
 enum SomeError: Error { case some}
 
 class NetworkLayerTests: XCTestCase {
-    
     //MARK:data: nil,response: nil,error: value, status: valid
     func test_get_withDataResponseNilErrorDataValid() {
         let exp = expectation(description: "waiting for response")
@@ -252,7 +251,6 @@ class NetworkLayerTests: XCTestCase {
     func memoryLeakTrack(_ instance: AnyObject, file: StaticString = #file, line: UInt = #line) {
         addTeardownBlock { [weak instance] in
             XCTAssertNil(instance, "Potential leak.", file: file, line: line)
-            
         }
     }
     
@@ -277,9 +275,7 @@ class NetworkLayerTests: XCTestCase {
                 exp.fulfill()
             case let .success((data, response)):
                 XCTFail()
-                
             }
-            
         }
         
         sut.get(from: url) { result in
@@ -288,14 +284,10 @@ class NetworkLayerTests: XCTestCase {
                 exp.fulfill()
             case let .success((data, response)):
                 XCTFail()
-                
             }
-            
         }
-        
         XCTAssertTrue(networkTask.isCalled)
         wait(for: [exp], timeout: 0.1)
-        
     }
 }
 
